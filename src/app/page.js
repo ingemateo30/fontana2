@@ -18,7 +18,6 @@ export default function Homepage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
 
-  // Controlar scroll para animaciones
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -187,7 +186,7 @@ export default function Homepage() {
               </div>
 
               {/* Caja de información flotante mejor posicionada */}
-              <div className="absolute -bottom-6 left-6 bg-[#2e4052] text-white px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-[#ce6d4c]">
+              <div className=" bottom-2 left-4 bg-[#2e4052] text-white px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-[#ce6d4c]">
                 <p className="text-sm font-medium tracking-wide">🏡 Entrega inmediata</p>
                 <p className="text-xl font-bold mt-1">¡Contáctanos!</p>
               </div>
@@ -238,6 +237,9 @@ export default function Homepage() {
           </div>
         </div>
       </section>
+      <>
+      <Map />
+      </>
       
 
 
