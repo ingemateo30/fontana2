@@ -154,7 +154,6 @@ export default function Nosotros() {
               viewport={{ once: true, amount: 0.3 }}
               variants={fadeInUp}
               whileHover="hover"
-              variants={hoverScale}
               className="p-8 bg-white rounded-2xl shadow-xl border-t-4 border-[#ce6d4c] transform transition-all duration-300"
             >
               <div className="bg-[#ce6d4c]/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
@@ -174,7 +173,6 @@ export default function Nosotros() {
               viewport={{ once: true, amount: 0.3 }}
               variants={fadeInUp}
               whileHover="hover"
-              variants={hoverScale}
               className="p-8 bg-white rounded-2xl shadow-xl border-t-4 border-[#ce6d4c] transform transition-all duration-300"
             >
               <div className="bg-[#ce6d4c]/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
@@ -194,7 +192,6 @@ export default function Nosotros() {
               viewport={{ once: true, amount: 0.3 }}
               variants={fadeInUp}
               whileHover="hover"
-              variants={hoverScale}
               className="p-8 bg-white rounded-2xl shadow-xl border-t-4 border-[#ce6d4c] transform transition-all duration-300"
             >
               <div className="bg-[#ce6d4c]/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">

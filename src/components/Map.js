@@ -12,7 +12,7 @@ const LoadScript = dynamic(
   { ssr: false }
 );
 
-// Estilos personalizados para el mapa
+
 const mapOptions = {
   disableDefaultUI: false,
   zoomControl: true,
@@ -82,9 +82,9 @@ const mapContainerStyle = {
   boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
 };
 
-const center = { lat: 4.6097, lng: -74.0817 }; // Bogotá, Colombia
+const center = { lat: 4.6097, lng: -74.0817 };
 
-// Coordenadas de lugares de interés
+
 const pointsOfInterest = [
   { id: 1, name: "Centro Comercial", position: { lat: 4.6120, lng: -74.0835 }, icon: <ShoppingBag size={20} /> },
   { id: 2, name: "Universidad", position: { lat: 4.6080, lng: -74.0845 }, icon: <School size={20} /> },

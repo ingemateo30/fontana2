@@ -42,7 +42,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4" style={{ color: fontanaBlue }}>NAVEGACIÓN</h3>
             <ul className="space-y-3 text-gray-700">
               {[{ href: "/", label: "Inicio" },
-                { href: "/lotws", label: "Lotes Disponibles" },
+                { href: "/lotes", label: "Lotes Disponibles" },
                 { href: "/nosotros", label: "Acerca del Proyecto" },
                 { href: "/contacto", label: "Contacto" }
               ].map((link, index) => (

@@ -267,20 +267,20 @@ export default function Contacto() {
                 <ul className="space-y-2">
                   <li className="flex justify-between">
                     <span>Lunes - Viernes:</span>
-                    <span>8:00 AM - 6:00 PM</span>
+                    <span>8:00 AM - 5:00 PM</span>
                   </li>
                   <li className="flex justify-between">
                     <span>Sábados:</span>
-                    <span>9:00 AM - 3:00 PM</span>
+                    <span>9:00 AM - 12:00 M</span>
                   </li>
                   <li className="flex justify-between">
                     <span>Domingos:</span>
-                    <span>Cerrado</span>
+                    <span>Previa cita</span>
                   </li>
                 </ul>
                 <div className="mt-6 pt-6 border-t border-white/20">
                   <p className="font-semibold">¿Necesitas atención inmediata?</p>
-                  <p className="text-xl font-bold mt-2">+57 321 263 1673</p>
+                  <p className="text-xl font-bold mt-2">+57 3184792991</p>
                 </div>
               </div>
             </motion.div>
@@ -332,19 +332,19 @@ export default function Contacto() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       </svg>
-                      Calle Principal #123, Ciudad, Colombia
+                      Calle 1era Sur # 24 - 35, San Gil, Colombia
                     </p>
                     <p className="flex items-start">
                       <svg className="w-5 h-5 text-[#ce6d4c] mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                       </svg>
-                      +57 321 263 1673
+                      +57 318 4792991
                     </p>
                     <p className="flex items-start">
                       <svg className="w-5 h-5 text-[#ce6d4c] mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                       </svg>
-                      info@fontana.com
+                      gustavobenitez1284@gmail.com
                     </p>
                   </div>
                 </div>
@@ -354,11 +354,11 @@ export default function Contacto() {
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-start">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ce6d4c] text-white flex items-center justify-center mr-3 font-semibold">1</span>
-                      Desde el centro, toma la Avenida Principal dirección norte.
+                      Desde el centro, toma la via principal hacia charala.
                     </li>
                     <li className="flex items-start">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ce6d4c] text-white flex items-center justify-center mr-3 font-semibold">2</span>
-                      En el segundo semáforo, gira a la derecha.
+                      sube por la via principal hacia el barrio jose antonio galan.
                     </li>
                     <li className="flex items-start">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ce6d4c] text-white flex items-center justify-center mr-3 font-semibold">3</span>
