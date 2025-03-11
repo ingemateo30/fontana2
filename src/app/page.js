@@ -30,27 +30,27 @@ export default function Homepage() {
 
   const heroSlides = [
     {
-      image: "/slide2.jpg",
+      image: "/fontana1.jpeg",
       title: "",
       subtitle: "Un espacio diseñado para vivir en armonía"
     },
     {
-      image: "/slide2.jpg",
+      image: "/fontana9.jpeg",
       title: "",
       subtitle: "Arquitectura que respeta el entorno natural"
     },
     {
-      image: "/slide2.jpgs",
+      image: "/fontana10.jpeg",
       title: "",
       subtitle: "Un proyecto único en San Gil"
     }
   ];
 
   const highlights = [
-    { icon: <MapPin size={24} />, title: "Ubicación Privilegiada", description: "A solo 5 minutos del centro" },
+    { icon: <MapPin size={24} />, title: "Ubicación Privilegiada", description: "A solo 5 minutos del centro " },
     { icon: <Leaf size={24} />, title: "Entorno Natural", description: "Rodeado de vegetación y aire puro" },
     { icon: <TrendingUp size={24} />, title: "Alta Plusvalía", description: "Inversión con crecimiento asegurado" },
-    { icon: <Home size={24} />, title: "Lotes Amplios", description: "Espacios desde 300m² hasta 500m²" }
+    { icon: <Home size={24} />, title: "Lotes Amplios", description: "Espacios desde 126m² hasta 188m²" }
   ];
 
   return (
@@ -72,8 +72,8 @@ export default function Homepage() {
         >
           {heroSlides.map((slide, i) => (
             <SwiperSlide key={i}>
-              <div className="relative w-full h-full">
-                <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+              <div className="relative w-full h-full pb-12">
+                <img src={slide.image} alt={slide.title} className="w-full h-full object-cover mb-12" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#2e4052]/80 via-[#2e4052]/50 to-transparent" />
               </div>
             </SwiperSlide>
@@ -119,8 +119,6 @@ export default function Homepage() {
               </a>
             </div>
           </div>
-          <br></br>
-          <br></br>
         </div>
       </section>
 
@@ -163,7 +161,7 @@ export default function Homepage() {
                   <p className="text-[#2e4052]">Lotes</p>
                 </div>
                 <div>
-                  <p className="text-4xl font-bold text-[#ce6d4c]">300m²</p>
+                  <p className="text-4xl font-bold text-[#ce6d4c]">126m²</p>
                   <p className="text-[#2e4052]">Área Mínima</p>
                 </div>
                 <div>
@@ -212,21 +210,21 @@ export default function Homepage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative rounded-xl overflow-hidden h-80 group">
-              <img src="/images/gallery1.jpg" alt="Galería" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <img src="/fontana8.png" alt="Galería" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#2e4052]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                 <p className="text-white font-medium">Zona común - Piscina</p>
               </div>
             </div>
             <div className="relative rounded-xl overflow-hidden h-80 group">
-              <img src="/images/gallery2.jpg" alt="Galería" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <img src="/fontana6.png" alt="Galería" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#2e4052]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white font-medium">Entrada principal</p>
+                <p className="text-white font-medium">Ubicacion exclusiva</p>
               </div>
             </div>
             <div className="relative rounded-xl overflow-hidden h-80 group">
-              <img src="/images/gallery3.jpg" alt="Galería" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <img src="/fontana7.png" alt="Galería" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#2e4052]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white font-medium">Senderos ecológicos</p>
+                <p className="text-white font-medium">Nuestro proyecto</p>
               </div>
             </div>
           </div>

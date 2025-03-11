@@ -24,9 +24,9 @@ const Footer = () => {
               Un nuevo concepto de vida para ti y tu familia en un entorno exclusivo y seguro.
             </p>
             <div className="mt-4 flex justify-center lg:justify-start space-x-4">
-              {[{ href: "https://facebook.com", icon: faFacebook },
+              {[{ href: "https://www.facebook.com/people/Fontana-Conjunto-Residencial-San-Gil/100086386437742/", icon: faFacebook },
                 { href: "https://instagram.com", icon: faInstagram },
-                { href: "https://wa.me/1234567890", icon: faWhatsapp },
+                { href: "https://wa.me/3184792991", icon: faWhatsapp },
               ].map((social, index) => (
                 <a key={index} href={social.href} target="_blank" rel="noopener noreferrer"
                   className="p-3 text-white rounded-md hover:opacity-80 transition-all"
@@ -42,10 +42,9 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4" style={{ color: fontanaBlue }}>NAVEGACIÓN</h3>
             <ul className="space-y-3 text-gray-700">
               {[{ href: "/", label: "Inicio" },
-                { href: "/lots", label: "Lotes Disponibles" },
-                { href: "/about", label: "Acerca del Proyecto" },
-                { href: "/contact", label: "Contacto" },
-                { href: "/financing", label: "Opciones de Financiamiento" }
+                { href: "/lotws", label: "Lotes Disponibles" },
+                { href: "/nosotros", label: "Acerca del Proyecto" },
+                { href: "/contacto", label: "Contacto" }
               ].map((link, index) => (
                 <li key={index}>
                   <Link href={link.href} className="flex items-center hover:text-blue-500 transition-colors">
@@ -88,13 +87,13 @@ const Footer = () => {
               </p>
               <p className="flex justify-between text-gray-700">
                 <span>Sábados</span>
-                <span>10:00 - 15:00</span>
+                <span>previa cita</span>
               </p>
               <p className="flex justify-between text-gray-700">
                 <span>Domingos</span>
                 <span>Previa cita</span>
               </p>
-              <Link href="/contact" className="block text-center mt-4 text-white py-3 rounded-md hover:opacity-80 transition-colors"
+              <Link href="/contacto" className="block text-center mt-4 text-white py-3 rounded-md hover:opacity-80 transition-colors"
                 style={{ backgroundColor: fontanaBlue }}>
                 <FontAwesomeIcon icon={faCalendarCheck} className="mr-2" />
                 Agendar Visita
