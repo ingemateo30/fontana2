@@ -1,149 +1,132 @@
-
-
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { GoogleMap, Marker, InfoWindow, Circle } from "@react-google-maps/api";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { MapPin, Navigation, ShoppingBag, School, Car, Trees } from "lucide-react";
+import "leaflet/dist/leaflet.css";
+import { ShoppingBag, School, Car, Trees, Coffee, Hospital, Bank, Utensils } from "lucide-react";
 
-const LoadScript = dynamic(
-  () => import("@react-google-maps/api").then((mod) => mod.LoadScript),
+// Importando Leaflet de forma dinámica para evitar errores de SSR
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Popup),
+  { ssr: false }
+);
+const Circle = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Circle),
   { ssr: false }
 );
 
+// Centro del mapa (San Gil, Colombia - Calle 1era Sur # 24 - 35)
+const center = { lat: 6.5486, lng: -73.1393 }; // Coordenadas aproximadas de San Gil
 
-const mapOptions = {
-  disableDefaultUI: false,
-  zoomControl: true,
-  mapTypeControl: true,
-  scaleControl: true,
-  streetViewControl: true,
-  rotateControl: true,
-  fullscreenControl: true,
-  styles: [
-    {
-      featureType: "water",
-      elementType: "geometry",
-      stylers: [
-        { color: "#e9e9e9" },
-        { lightness: 17 }
-      ]
-    },
-    {
-      featureType: "landscape",
-      elementType: "geometry",
-      stylers: [
-        { color: "#f5f5f5" },
-        { lightness: 20 }
-      ]
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.fill",
-      stylers: [
-        { color: "#ffffff" },
-        { lightness: 17 }
-      ]
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.stroke",
-      stylers: [
-        { color: "#ffffff" },
-        { lightness: 29 },
-        { weight: 0.2 }
-      ]
-    },
-    {
-      featureType: "poi.park",
-      elementType: "geometry",
-      stylers: [
-        { color: "#dedede" },
-        { lightness: 21 }
-      ]
-    },
-    {
-      featureType: "administrative",
-      elementType: "geometry.stroke",
-      stylers: [
-        { color: "#fefefe" },
-        { lightness: 17 },
-        { weight: 1.2 }
-      ]
-    }
-  ]
-};
-
-const mapContainerStyle = {
-  width: "100%",
-  height: "600px",
-  borderRadius: "16px",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-};
-
-const center = { lat: 4.6097, lng: -74.0817 };
-
-
+// Puntos de interés alrededor del proyecto en San Gil
 const pointsOfInterest = [
-  { id: 1, name: "Centro Comercial", position: { lat: 4.6120, lng: -74.0835 }, icon: <ShoppingBag size={20} /> },
-  { id: 2, name: "Universidad", position: { lat: 4.6080, lng: -74.0845 }, icon: <School size={20} /> },
-  { id: 3, name: "Acceso Principal", position: { lat: 4.6090, lng: -74.0800 }, icon: <Car size={20} /> },
-  { id: 4, name: "Parque Recreativo", position: { lat: 4.6110, lng: -74.0805 }, icon: <Trees size={20} /> }
+  { id: 1, name: "Centro Comercial El Puente", position: [6.5501, -73.1412], icon: <ShoppingBag size={20} /> },
+  { id: 2, name: "Universidad Libre", position: [6.5472, -73.1375], icon: <School size={20} /> },
+  { id: 3, name: "Terminal de Transporte", position: [6.5462, -73.1422], icon: <Car size={20} /> },
+  { id: 4, name: "Parque El Gallineral", position: [6.5520, -73.1380], icon: <Trees size={20} /> },
+  { id: 5, name: "Café Colonial", position: [6.5492, -73.1405], icon: <Coffee size={20} /> },
+  { id: 6, name: "Hospital Regional", position: [6.5505, -73.1345], icon: <Hospital size={20} /> },
+  { id: 7, name: "Banco de la República", position: [6.5479, -73.1410], icon: <Hospital size={20} /> },
+  { id: 8, name: "Restaurante Río Suárez", position: [6.5490, -73.1370], icon: <Utensils size={20} /> },
 ];
 
+// Datos de los lotes disponibles
 const lotMarkers = [
-  { id: 1, number: "15A", position: { lat: 4.6100, lng: -74.0820 }, available: true, size: "350m²", price: "$180,000" },
-  { id: 2, number: "16B", position: { lat: 4.6105, lng: -74.0825 }, available: true, size: "420m²", price: "$215,000" },
-  { id: 3, number: "17C", position: { lat: 4.6110, lng: -74.0830 }, available: false, size: "380m²", price: "$195,000" },
-  { id: 4, number: "18D", position: { lat: 4.6095, lng: -74.0815 }, available: true, size: "400m²", price: "$205,000" },
-  { id: 5, number: "19E", position: { lat: 4.6088, lng: -74.0822 }, available: true, size: "450m²", price: "$230,000" },
+  { id: 1, number: "15A", position: [6.5486, -73.1383], available: true, size: "350m²", price: "$180,000" },
+  { id: 2, number: "16B", position: [6.5491, -73.1388], available: true, size: "420m²", price: "$215,000" },
+  { id: 3, number: "17C", position: [6.5495, -73.1393], available: false, size: "380m²", price: "$195,000" },
+  { id: 4, number: "18D", position: [6.5481, -73.1390], available: true, size: "400m²", price: "$205,000" },
 ];
 
 const Map = ({ showLots = false }) => {
   const [selectedLot, setSelectedLot] = useState(null);
   const [selectedPOI, setSelectedPOI] = useState(null);
   const [activeTab, setActiveTab] = useState("location");
-  const [mapLoaded, setMapLoaded] = useState(false);
-  
-  // Ocultar InfoWindow cuando cambia la pestaña
+  const [leafletLoaded, setLeafletLoaded] = useState(false);
+  const [mapIcon, setMapIcon] = useState(null);
+  const [poiIcons, setPoiIcons] = useState({});
+
+  // Inicializar el icono personalizado una vez que el componente se monte en el cliente
+  useEffect(() => {
+    // Asegurarse de que el código se ejecute solo en el navegador
+    if (typeof window !== "undefined") {
+      import("leaflet").then(L => {
+        // Configuración de icono personalizado para el proyecto
+        const customIcon = new L.Icon({
+          iconUrl: "/fontana-logo1.png",
+          iconSize: [30, 45],
+          iconAnchor: [15, 45],
+          popupAnchor: [0, -40],
+        });
+        
+        // Crear iconos específicos para cada punto de interés
+        const poiIconsObj = {};
+        pointsOfInterest.forEach(poi => {
+          // Diferentes colores para diferentes tipos de POI
+          let iconColor;
+          switch(poi.id % 8) {
+            case 1: iconColor = "#ce6d4c"; break; // Centro comercial
+            case 2: iconColor = "#3b82f6"; break; // Universidad
+            case 3: iconColor = "#10b981"; break; // Terminal
+            case 4: iconColor = "#22c55e"; break; // Parque
+            case 5: iconColor = "#8b5cf6"; break; // Café
+            case 6: iconColor = "#ef4444"; break; // Hospital
+            case 7: iconColor = "#f59e0b"; break; // Banco
+            case 0: iconColor = "#ec4899"; break; // Restaurante
+            default: iconColor = "#6b7280";
+          }
+          
+          // Crear un icono de marcador personalizado con HTML
+          const poiIcon = new L.DivIcon({
+            className: "custom-div-icon",
+            html: `<div style="background-color: ${iconColor}; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; border-radius: 50%; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+                     <div style="font-size: 16px; font-weight: bold;">${poi.id}</div>
+                   </div>`,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15],
+          });
+          
+          poiIconsObj[poi.id] = poiIcon;
+        });
+        
+        setMapIcon(customIcon);
+        setPoiIcons(poiIconsObj);
+        setLeafletLoaded(true);
+      });
+    }
+  }, []);
+
+  // Reiniciar selecciones cuando cambia la pestaña
   useEffect(() => {
     setSelectedLot(null);
     setSelectedPOI(null);
   }, [activeTab]);
-  
-  // Manejar clic en marcador de lote
-  const handleLotClick = useCallback((lot) => {
-    setSelectedPOI(null);
-    setSelectedLot(lot);
-  }, []);
-  
-  // Manejar clic en punto de interés
-  const handlePOIClick = useCallback((poi) => {
-    setSelectedLot(null);
-    setSelectedPOI(poi);
-  }, []);
-  
-  // Icono personalizado para el marcador principal
-  const mainMarkerIcon = {
-    path: "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z",
-    fillColor: "#ce6d4c",
-    fillOpacity: 1,
-    strokeWeight: 0,
-    scale: 2,
-    anchor: { x: 12, y: 24 },
-  };
-  
-  // Iconos personalizados para lotes
-  const getMarkerIcon = (available) => ({
-    path: "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z",
-    fillColor: available ? "#4CAF50" : "#F44336",
-    fillOpacity: 0.9,
-    strokeWeight: 1,
-    strokeColor: "#FFFFFF",
-    scale: 1.5,
-    anchor: { x: 12, y: 24 },
-  });
+
+  // Si Leaflet aún no está cargado, mostrar un indicador de carga
+  if (!leafletLoaded) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2e4052]">Cargando mapa...</h2>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 bg-white">
@@ -151,15 +134,17 @@ const Map = ({ showLots = false }) => {
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-[#2e4052]">Ubicación Estratégica</h2>
           <p className="mt-4 text-[#6c4634] max-w-2xl mx-auto">
-            Nuestro proyecto se encuentra en una zona privilegiada con excelente conectividad y rodeado de todos los servicios que necesitas.
+            Nuestro proyecto se encuentra en una zona privilegiada de San Gil, Colombia, con excelente conectividad.
+          </p>
+          <p className="mt-2 font-medium text-[#ce6d4c]">
+            Calle 1era Sur # 24 - 35, San Gil, Colombia
           </p>
         </div>
-        
+
         <div className="flex flex-col md:flex-row gap-8">
           {/* Panel de información */}
           <div className="md:w-1/3">
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              {/* Pestañas */}
               <div className="flex border-b">
                 <button 
                   className={`flex-1 py-4 px-4 text-center font-medium transition-colors ${activeTab === 'location' ? 'text-[#ce6d4c] border-b-2 border-[#ce6d4c]' : 'text-gray-500 hover:text-[#2e4052]'}`}
@@ -176,201 +161,164 @@ const Map = ({ showLots = false }) => {
                   </button>
                 )}
               </div>
-              
-              {/* Contenido de pestañas */}
+
               <div className="p-6">
                 {activeTab === 'location' && (
                   <div>
-                    <div className="flex items-center mb-4">
-                      <div className="w-10 h-10 rounded-full bg-[#ce6d4c]/10 flex items-center justify-center text-[#ce6d4c] mr-3">
-                        <MapPin size={20} />
-                      </div>
-                      <h3 className="text-xl font-semibold text-[#2e4052]">Cerca de Todo</h3>
-                    </div>
-                    
+                    <h3 className="text-xl font-semibold text-[#2e4052]">Cerca de Todo</h3>
                     <p className="text-[#6c4634] mb-6">
-                      Fontana está estratégicamente ubicado, permitiéndote disfrutar de la tranquilidad de la naturaleza sin renunciar a la comodidad de la ciudad.
+                      Fontana está estratégicamente ubicado en San Gil, con acceso a múltiples servicios.
                     </p>
                     
-                    <h4 className="font-medium text-[#2e4052] mb-2">Distancia a Puntos de Interés:</h4>
-                    <ul className="space-y-3">
-                      {pointsOfInterest.map((poi) => (
-                        <li key={poi.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors duration-200" onClick={() => handlePOIClick(poi)}>
-                          <div className="w-8 h-8 rounded-full bg-[#2e4052]/10 flex items-center justify-center text-[#2e4052]">
-                            {poi.icon}
+                    <div className="mt-4">
+                      <h4 className="font-medium text-[#2e4052] mb-3">Puntos de interés cercanos:</h4>
+                      <div className="grid grid-cols-1 gap-2 max-h-80 overflow-y-auto pr-2">
+                        {pointsOfInterest.map((poi) => (
+                          <div 
+                            key={poi.id} 
+                            className={`flex items-center p-3 rounded-lg border transition-all ${selectedPOI && selectedPOI.id === poi.id ? 'bg-[#f9eae3] border-[#ce6d4c]' : 'bg-gray-50 hover:bg-gray-100 border-gray-200'} cursor-pointer`}
+                            onClick={() => setSelectedPOI(poi)}
+                          >
+                            <div className="flex justify-center items-center w-8 h-8 rounded-full bg-[#ce6d4c] text-white mr-3">
+                              {poi.id}
+                            </div>
+                            <div>
+                              <span className="font-medium text-[#2e4052]">{poi.name}</span>
+                              <div className="text-[#6c4634] text-sm flex items-center mt-1">
+                                {poi.icon}
+                                <span className="ml-1">350m</span>
+                              </div>
+                            </div>
                           </div>
-                          <span>{poi.name}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    
-                    <div className="mt-8 flex items-center bg-[#2e4052]/5 p-4 rounded-lg">
-                      <div className="text-[#2e4052] mr-3">
-                        <Navigation size={20} />
+                        ))}
                       </div>
-                      <p className="text-sm text-[#2e4052]">
-                        A solo 15 minutos del centro de la ciudad y con excelentes vías de acceso.
-                      </p>
                     </div>
                   </div>
                 )}
-                
+
                 {activeTab === 'lots' && showLots && (
                   <div>
                     <h3 className="text-xl font-semibold text-[#2e4052] mb-4">Lotes Disponibles</h3>
-                    <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                    <div className="space-y-3">
                       {lotMarkers.map((lot) => (
                         <div 
                           key={lot.id} 
-                          className={`p-3 rounded-lg cursor-pointer transition-all duration-200 border ${lot.available ? 'border-green-100 bg-green-50 hover:bg-green-100' : 'border-red-100 bg-red-50 hover:bg-red-100'} ${selectedLot?.id === lot.id ? 'ring-2 ring-[#ce6d4c]' : ''}`}
-                          onClick={() => handleLotClick(lot)}
+                          className={`p-3 rounded-lg border transition-all ${!lot.available ? 'bg-gray-100 opacity-70' : selectedLot && selectedLot.id === lot.id ? 'bg-[#f9eae3] border-[#ce6d4c]' : 'bg-gray-50 hover:bg-gray-100 border-gray-200'} cursor-pointer`}
+                          onClick={() => lot.available && setSelectedLot(lot)}
                         >
                           <div className="flex justify-between items-center">
-                            <h4 className="font-medium">Lote {lot.number}</h4>
-                            <span className={`text-xs px-2 py-1 rounded-full ${lot.available ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-                              {lot.available ? 'Disponible' : 'Vendido'}
-                            </span>
+                            <h4 className="font-medium text-[#2e4052]">Lote {lot.number}</h4>
+                            {lot.available ? (
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Disponible</span>
+                            ) : (
+                              <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-medium">Vendido</span>
+                            )}
                           </div>
-                          {lot.available && (
-                            <div className="mt-2 text-sm grid grid-cols-2 gap-2">
-                              <div>
-                                <span className="text-gray-500">Área:</span> {lot.size}
-                              </div>
-                              <div>
-                                <span className="text-gray-500">Precio:</span> {lot.price}
-                              </div>
-                            </div>
-                          )}
+                          <div className="mt-2 flex justify-between text-sm text-gray-600">
+                            <span>{lot.size}</span>
+                            <span className="font-semibold text-[#ce6d4c]">{lot.price}</span>
+                          </div>
                         </div>
                       ))}
-                    </div>
-                    
-                    <div className="mt-6">
-                      <a 
-                        href="/lotes" 
-                        className="block w-full py-3 px-4 bg-[#ce6d4c] text-white text-center rounded-lg font-medium hover:bg-[#ce6d4c]/90 transition-colors"
-                      >
-                        Ver Todos los Lotes
-                      </a>
                     </div>
                   </div>
                 )}
               </div>
             </div>
           </div>
-          
+
           {/* Mapa */}
           <div className="md:w-2/3 relative">
-            <LoadScript 
-              googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-              onLoad={() => setMapLoaded(true)}
+            <MapContainer 
+              center={[center.lat, center.lng]} 
+              zoom={15} 
+              scrollWheelZoom={false}
+              className="h-[600px] w-full rounded-xl shadow-lg relative"
+              
             >
-              <GoogleMap 
-                mapContainerStyle={mapContainerStyle} 
-                center={center} 
-                zoom={15}
-                options={mapOptions}
-              >
-                {/* Radio de ubicación */}
-                <Circle
-                  center={center}
-                  radius={300}
-                  options={{
-                    fillColor: "#ce6d4c",
-                    fillOpacity: 0.1,
-                    strokeColor: "#ce6d4c",
-                    strokeOpacity: 0.5,
-                    strokeWeight: 1,
-                  }}
-                />
-                
-                {/* Marcador principal */}
-                <Marker 
-                  position={center} 
-                  icon={mainMarkerIcon}
-                  animation={window.google?.maps?.Animation?.DROP}
-                  zIndex={1000}
-                >
-                  <InfoWindow>
-                    <div className="text-[#2e4052] font-medium">
-                      Proyecto Fontana
+              {/* Capa de OpenStreetMap */}
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+
+              {/* Marcador principal del proyecto */}
+              {mapIcon && (
+                <Marker position={[center.lat, center.lng]} icon={mapIcon}>
+                  <Popup>
+                    <div className="text-center p-1">
+                      <h3 className="font-bold text-[#2e4052] text-lg">Proyecto Fontana</h3>
+                      <p className="text-[#6c4634]">Calle 1era Sur # 24 - 35</p>
+                      <p className="text-sm text-gray-500">San Gil, Colombia</p>
                     </div>
-                  </InfoWindow>
+                  </Popup>
                 </Marker>
+              )}
 
-                {/* Puntos de interés (visibles en pestaña ubicación) */}
-                {activeTab === 'location' && mapLoaded && pointsOfInterest.map((poi) => (
-                  <Marker
-                    key={poi.id}
-                    position={poi.position}
-                    onClick={() => handlePOIClick(poi)}
-                    icon={{
-                      url: `http://maps.google.com/mapfiles/ms/icons/blue-dot.png`,
-                    }}
-                    animation={window.google?.maps?.Animation?.DROP}
-                  />
-                ))}
-
-                {/* Ventana de información para POI */}
-                {selectedPOI && (
-                  <InfoWindow
-                    position={selectedPOI.position}
-                    onCloseClick={() => setSelectedPOI(null)}
-                  >
-                    <div className="p-1">
-                      <h3 className="font-medium text-[#2e4052]">{selectedPOI.name}</h3>
-                      <p className="text-sm text-gray-600 mt-1">A 5 min. del proyecto</p>
+              {/* Puntos de interés */}
+              {activeTab === "location" && Object.keys(poiIcons).length > 0 && pointsOfInterest.map((poi) => (
+                <Marker 
+                  key={poi.id} 
+                  position={poi.position} 
+                  icon={poiIcons[poi.id]}
+                  opacity={selectedPOI && selectedPOI.id === poi.id ? 1 : 0.8}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedPOI(poi);
+                    }
+                  }}
+                >
+                  <Popup>
+                    <div className="text-center p-1">
+                      <div className="flex justify-center mb-2 text-[#ce6d4c]">{poi.icon}</div>
+                      <h3 className="font-medium text-[#2e4052]">{poi.name}</h3>
+                      <p className="text-xs text-gray-500 mt-1">A 350m de Fontana</p>
                     </div>
-                  </InfoWindow>
-                )}
+                  </Popup>
+                </Marker>
+              ))}
 
-                {/* Marcadores de lotes (visibles en pestaña lotes) */}
-                {activeTab === 'lots' && showLots && mapLoaded && lotMarkers.map((lot) => (
-                  <Marker
-                    key={lot.id}
-                    position={lot.position}
-                    onClick={() => handleLotClick(lot)}
-                    icon={getMarkerIcon(lot.available)}
-                    animation={window.google?.maps?.Animation?.DROP}
-                    zIndex={selectedLot?.id === lot.id ? 1000 : 1}
-                  />
-                ))}
-
-                {/* Ventana de información para lotes */}
-                {selectedLot && (
-                  <InfoWindow
-                    position={selectedLot.position}
-                    onCloseClick={() => setSelectedLot(null)}
-                  >
-                    <div className="p-1">
-                      <h3 className="font-medium text-[#2e4052]">Lote {selectedLot.number}</h3>
-                      <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                        <div>
-                          <span className="text-gray-500">Estado:</span> 
-                          <span className={selectedLot.available ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
-                            {selectedLot.available ? ' Disponible' : ' Vendido'}
-                          </span>
-                        </div>
-                        {selectedLot.available && (
-                          <>
-                            <div><span className="text-gray-500">Área:</span> {selectedLot.size}</div>
-                            <div><span className="text-gray-500">Precio:</span> {selectedLot.price}</div>
-                            <div className="col-span-2 mt-2">
-                              <a 
-                                href={`/lotes/${selectedLot.id}`} 
-                                className="text-[#ce6d4c] hover:underline text-sm font-medium"
-                              >
-                                Ver detalles completos →
-                              </a>
-                            </div>
-                          </>
-                        )}
+              {/* Lotes */}
+              {activeTab === "lots" && showLots && mapIcon && lotMarkers.map((lot) => (
+                <Marker 
+                  key={lot.id} 
+                  position={lot.position} 
+                  icon={mapIcon}
+                  opacity={lot.available ? (selectedLot && selectedLot.id === lot.id ? 1 : 0.7) : 0.4}
+                  eventHandlers={{
+                    click: () => {
+                      if (lot.available) {
+                        setSelectedLot(lot);
+                      }
+                    }
+                  }}
+                >
+                  <Popup>
+                    <div className="text-center p-1">
+                      <h3 className="font-medium text-[#2e4052]">Lote {lot.number}</h3>
+                      <div className="flex justify-between text-sm mt-1">
+                        <span>{lot.size}</span>
+                        <span className="font-semibold text-[#ce6d4c]">{lot.price}</span>
                       </div>
+                      {!lot.available && (
+                        <p className="text-xs text-red-500 font-medium mt-1">No disponible</p>
+                      )}
                     </div>
-                  </InfoWindow>
-                )}
-              </GoogleMap>
-            </LoadScript>
+                  </Popup>
+                </Marker>
+              ))}
+
+              {/* Radio de ubicación */}
+              <Circle 
+                center={[center.lat, center.lng]} 
+                radius={300} 
+                pathOptions={{ 
+                  color: "#ce6d4c",
+                  fillColor: "#ce6d4c",
+                  fillOpacity: 0.1 
+                }} 
+              />
+            </MapContainer>
           </div>
         </div>
       </div>

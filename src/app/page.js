@@ -142,7 +142,6 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Sección de proyecto */}
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col md:flex-row items-center gap-12">
@@ -239,6 +238,7 @@ export default function Homepage() {
           </div>
         </div>
       </section>
+      
 
 
       <Footer />
