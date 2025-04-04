@@ -38,8 +38,7 @@ export default function Galeria() {
             </div>
           ))}
         </div>
-      </section>
-
+      </section> 
       <Footer />
     </div>
   );
